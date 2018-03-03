@@ -154,6 +154,7 @@ module "loadbalancer" {
   network_id        = "${ module.network.network_id }"
   fip               = "${ module.network.fip }"
   master_count      = "${ var.master_node_count }"
+  master_ips        = "${ module.master.ips }"
   security_group    = "${ module.network.security_group_name }"
   keypair           = "${ var.keypair_name }"
 }
