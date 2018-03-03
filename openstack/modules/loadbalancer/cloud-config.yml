@@ -1,0 +1,41 @@
+#cloud-config
+
+---
+coreos:
+
+  units:
+    - name: docker.service
+      command: start
+      drop-ins:
+        - name: docker.conf
+          content: |
+            [Service]
+            EnvironmentFile=/etc/default/docker
+
+    - name: nginx.service
+      command: start
+      content: |
+        [Unit]
+        Description=NginxLoadBalancer
+        After=docker.service
+        Requires=docker.service
+
+        [Service]
+        TimeoutStartExec=0
+        Restart=always
+        RestartSec=10
+        ExecStartPre=-/usr/bin/docker kill nginxlb
+        ExecStartPre=-/usr/bin/docker rm nginxlb
+        ExecStartPre=/usr/bin/docker pull nginx
+        ExecStart=/usr/bin/docker run --name nginxlb nginx
+        ExecStop=/usr/bin/docker stop nginxlb
+
+        [Install]
+        WantedBy=multi-user.target
+
+write-files:
+
+  - path: /etc/default/docker
+    content: |
+      DOCKER_OPTS="--ip-masq=false --iptables=false --log-driver=json-file --log-level=warn --log-opt=max-file=5 --log-opt=max-size=10m --storage-driver=overlay"
+

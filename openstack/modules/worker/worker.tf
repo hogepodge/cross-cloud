@@ -1,4 +1,4 @@
-resource "openstack_compute_instance_v2" "cncf" {
+resource "openstack_compute_instance_v2" "k8s" {
   count           = "${ var.count }"
   name            = "${ var.name }-worker-${ count.index + 1 }"
   image_name      = "${ var.image }"

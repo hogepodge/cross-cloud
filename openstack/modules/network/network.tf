@@ -4,20 +4,20 @@ resource "openstack_networking_network_v2" "k8s" {
   admin_state_up = "true"
 }
 
-resource "openstack_networking_subnet_v2" "internal" {
-  network_id = "${ openstack_networking_network_v2.internal.id }"
+resource "openstack_networking_subnet_v2" "k8s" {
+  network_id = "${ openstack_networking_network_v2.k8s.id }"
   cidr = "${ var.internal_network_cidr }"
   dns_nameservers  = [ "8.8.8.8" ]
 }
 
-resource "openstack_networking_router_v2" "internal" {
-  name = "router-k8s-internal"
+resource "openstack_networking_router_v2" "k8s" {
+  name = "router-k8s"
   external_gateway = "${ var.external_network_id }"
 }
 
-resource "openstack_networking_router_interface_v2" "internal" {
-  router_id = "${ openstack_networking_router_v2.internal.id }"
-  subnet_id = "${ openstack_networking_subnet_v2.internal.id }"
+resource "openstack_networking_router_interface_v2" "ks" {
+  router_id = "${ openstack_networking_router_v2.k8s.id }"
+  subnet_id = "${ openstack_networking_subnet_v2.k8s.id }"
 }
 
 #### Security Groups
@@ -57,3 +57,8 @@ resource "openstack_networking_secgroup_rule_v2" "k8s_https" {
   security_group_id = "${ openstack_networking_secgroup_v2.k8s.id }"
 }
 
+### Floating IP
+
+resource "openstack_compute_floatingip_v2" "fip" {
+  pool = "${ var.floating_ip_pool }"
+}
