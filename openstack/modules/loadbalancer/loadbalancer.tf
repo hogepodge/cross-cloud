@@ -20,4 +20,9 @@ resource "openstack_compute_floatingip_associate_v2" "loadbalancer" {
 
 data "template_file" "cloud_config" {
   template = "${ file( "${ path.module }/cloud-config.yml" )}"
+
+  vars {
+    server_ips = "${ join("\n", formatlist("          server %s:443;", var.master_ips)) }"
+#     server_ips = "${ join("\n", flatten(var.master_ips)) }"
+  }
 }

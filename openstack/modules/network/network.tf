@@ -5,13 +5,14 @@ resource "openstack_networking_network_v2" "k8s" {
 }
 
 resource "openstack_networking_subnet_v2" "k8s" {
+  name = "k8s-subnet"
   network_id = "${ openstack_networking_network_v2.k8s.id }"
   cidr = "${ var.internal_network_cidr }"
   dns_nameservers  = [ "8.8.8.8" ]
 }
 
 resource "openstack_networking_router_v2" "k8s" {
-  name = "router-k8s"
+  name = "k8s-router"
   external_gateway = "${ var.external_network_id }"
 }
 
@@ -23,7 +24,7 @@ resource "openstack_networking_router_interface_v2" "ks" {
 #### Security Groups
 
 resource "openstack_networking_secgroup_v2" "k8s" {
-  name        = "k8s"
+  name        = "k8s-secgroup"
   description = "Cross Cloud Security Group (ssh, http, https)"
 }
 
