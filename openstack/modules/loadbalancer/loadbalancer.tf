@@ -8,7 +8,7 @@ resource "openstack_compute_instance_v2" "loadbalancer" {
   user_data       = "${ data.template_file.cloud_config.rendered }"
 
   network {
-    uuid = "${ var.network_id }"
+    port = "${ var.lb_port }"
   }
 }
 
