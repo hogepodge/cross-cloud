@@ -16,6 +16,10 @@ variable keypair_name { default = "K8s" }
 # TLS settings
 variable "cloud_location" { default = "vexxhost.com" }
 
+# Load Balancer Configuration
+variable "lb_flavor_name" { default = "v1-standard-1" }
+variable "lb_image_name" { default = "CoreOS 1520.8.0" }
+
 # Master Configuration
 variable "master_flavor_name" { default = "v1-standard-1" }
 variable "master_image_name" { default = "CoreOS 1520.8.0" }
