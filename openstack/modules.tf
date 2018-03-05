@@ -125,7 +125,7 @@ module "tls" {
   tls_apiserver_cert_validity_period_hours = 1000
   tls_apiserver_cert_early_renewal_hours = 100
   tls_apiserver_cert_dns_names = "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,*.${ var.cloud_location }"
-  tls_apiserver_cert_ip_addresses = "127.0.0.1,10.0.0.1,100.64.0.1,${ var.dns_service_ip }"
+  tls_apiserver_cert_ip_addresses = "127.0.0.1,10.0.0.1,100.64.0.1,${ var.dns_service_ip },${ module.network.fip }"
 
   tls_worker_cert_subject_common_name = "kubernetes-worker"
   tls_worker_cert_validity_period_hours = 1000
@@ -138,7 +138,7 @@ module "kubeconfig" {
   source = "../kubeconfig"
 
   data_dir = "${ var.data_dir }"
-  endpoint = "${ var.dns_service_ip }"
+  endpoint = "${ module.network.fip }"
   name = "${ var.name }"
   ca = "${ module.tls.ca }"
   client = "${ module.tls.client }"
@@ -149,8 +149,8 @@ module "loadbalancer" {
   source = "./modules/loadbalancer"
 
   name              = "${ var.name }"
-  flavor            = "${ var.master_flavor_name }"
-  image             = "${ var.master_image_name }"
+  flavor            = "${ var.lb_flavor_name }"
+  image             = "${ var.lb_image_name }"
   network_id        = "${ module.network.network_id }"
   fip               = "${ module.network.fip }"
   master_count      = "${ var.master_node_count }"
