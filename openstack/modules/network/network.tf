@@ -52,7 +52,6 @@ resource "openstack_networking_secgroup_rule_v2" "kubernetes_icmp" {
   security_group_id = "${ openstack_networking_secgroup_v2.k8s.id }"
 }
 
-
 ### Floating IPs
 
 resource "openstack_compute_floatingip_v2" "master" {
